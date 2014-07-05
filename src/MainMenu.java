@@ -14,7 +14,7 @@ public class MainMenu extends BasicGameState {
         stateId = id;
 
         buttons.add(new MenuButton("Play game", 40, 40, TicTacToe.LEVELSELECT));
-        buttons.add(new MenuButton("Exit", 40, 80, 42));
+        buttons.add(new MenuButton("Exit", 40, 80, 10));
     }
 
     public int getID() {

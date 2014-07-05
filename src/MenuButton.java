@@ -6,17 +6,23 @@ import org.newdawn.slick.state.StateBasedGame;
 public class MenuButton {
     private Rectangle shape;
     private String text;
-    private int nextState;
+    private int action;
 
-    public MenuButton(String text, int x, int y, int next) {
+    public MenuButton(String text, int x, int y, int action) {
         this.text = text;
         shape = new Rectangle(x, y, 128, 24);
-        nextState = next;
+        this.action = action;
     }
 
     public void mouseReleased(int x, int y, StateBasedGame thisGame) {
         if (shape.contains(x, y)) {
-            thisGame.enterState(nextState);
+            if (action < thisGame.getStateCount()) {
+                thisGame.enterState(action);
+            } else {
+                switch (action) {
+                    case 10: thisGame.getContainer().exit();
+                }
+            }
         }
     }
 

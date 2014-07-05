@@ -14,7 +14,7 @@ public class LevelSelect extends BasicGameState {
         stateId = id;
 
         buttons.add(new MenuButton("Start Game!", 40, 40, TicTacToe.GAME));
-        buttons.add(new MenuButton("Back", 40, 80, 1));
+        buttons.add(new MenuButton("Back", 40, 80, TicTacToe.MAINMENU));
     }
 
     public int getID() {

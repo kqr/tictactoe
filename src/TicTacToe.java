@@ -9,9 +9,9 @@ import org.newdawn.slick.SlickException;
 
 
 public class TicTacToe extends StateBasedGame {
-    public static final int MAINMENU = 1;
-    public static final int LEVELSELECT = 2;
-    public static final int GAME = 3;
+    public static final int MAINMENU = 0;
+    public static final int LEVELSELECT = 1;
+    public static final int GAME = 2;
 
     public static final int CROSS = 0;
     public static final int CIRCLE = 1;
