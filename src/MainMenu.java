@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+
+import java.util.Arrays;
 
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -7,14 +8,16 @@ import org.newdawn.slick.Graphics;
 
 public class MainMenu extends BasicGameState {
     private int stateId;
-    private ArrayList<MenuButton> buttons = new ArrayList<>();
+    private ButtonLike[] buttons;
     private StateBasedGame thisGame;
 
     public MainMenu(int id) {
         stateId = id;
 
-        buttons.add(new MenuButton("Play game", 40, 40, TicTacToe.LEVELSELECT));
-        buttons.add(new MenuButton("Exit", 40, 80, 10));
+        buttons = new ButtonLike[]{
+            new MenuButton("Play game", 256, 200),
+            new MenuButton("Exit", 256, 340)
+        };
     }
 
     public int getID() {
@@ -29,7 +32,14 @@ public class MainMenu extends BasicGameState {
     @Override
     public void mouseReleased(int mouseButton, int x, int y) {
         if (mouseButton == 0) {
-            buttons.stream().forEach(button -> button.mouseReleased(x, y, thisGame));
+            for (int i = 0; i < buttons.length; i++) {
+                if (buttons[i].clicked(x, y)) {
+                    switch (i) {
+                        case 0: thisGame.enterState(TicTacToe.LEVELSELECT); break;
+                        case 1: thisGame.getContainer().exit(); break;
+                    }
+                }
+            }
         }
     }
 
@@ -45,7 +55,7 @@ public class MainMenu extends BasicGameState {
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
-        buttons.stream().forEach(button -> button.render(g));
+        Arrays.stream(buttons).forEach(button -> button.render(g));
     }
 
 }

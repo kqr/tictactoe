@@ -25,7 +25,7 @@ public class Game extends BasicGameState {
         sprites[TicTacToe.CROSS] = new Image("res/cross.png");
         sprites[TicTacToe.CIRCLE] = new Image("res/circle.png");
 
-        backButton = new MenuButton("Back", 500, 440, TicTacToe.LEVELSELECT);
+        backButton = new MenuButton("Back", 500, 440);
 
         for (int i = 0; i < 9; i++) {
             uiSquares[i] = new Rectangle(57 + 130 * (i % 3),
@@ -59,7 +59,9 @@ public class Game extends BasicGameState {
     @Override
     public void mouseReleased(int mouseButton, int x, int y) {
         if (mouseButton == 0) {
-            backButton.mouseReleased(x, y, thisGame);
+            if (backButton.clicked(x, y)) {
+                thisGame.enterState(TicTacToe.LEVELSELECT);
+            }
 
             if (board.humanTurn()) {
                 for (int i = 0; i < 9; i++) {

@@ -30,9 +30,9 @@ public class TicTacToe extends StateBasedGame {
     }
 
     private static boolean[] humans = {true, false};
-    //public static void setHumans(boolean cross, boolean circle) {
-    //    humans = new boolean[]{cross, circle};
-    //}
+    public static void toggleHuman(int player) {
+        humans[player] = !humans[player];
+    }
     public static boolean[] getHumans() {
         return Arrays.copyOf(humans, 2);
     }

@@ -1,20 +1,32 @@
-import java.util.ArrayList;
+
+import java.util.Arrays;
 
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public class LevelSelect extends BasicGameState {
     private int stateId;
-    private ArrayList<MenuButton> buttons = new ArrayList<>();
+    private ButtonLike[] buttons;
     private StateBasedGame thisGame;
 
-    public LevelSelect(int id) {
+    public LevelSelect(int id) throws SlickException {
         stateId = id;
 
-        buttons.add(new MenuButton("Start Game!", 40, 40, TicTacToe.GAME));
-        buttons.add(new MenuButton("Back", 40, 80, TicTacToe.MAINMENU));
+        Image[] checkSprites = new Image[]{
+                new Image("res/check_false.png"),
+                new Image("res/check_true.png")
+        };
+
+        buttons = new ButtonLike[]{
+                new MenuButton("Start Game!", 256, 300),
+                new MenuButton("Back", 256, 340),
+                new CheckBox("Cross", 270, 60, TicTacToe.getHumans()[TicTacToe.CROSS], checkSprites),
+                new CheckBox("Circle", 270, 100, TicTacToe.getHumans()[TicTacToe.CIRCLE], checkSprites)
+        };
     }
 
     public int getID() {
@@ -29,7 +41,18 @@ public class LevelSelect extends BasicGameState {
     @Override
     public void mouseReleased(int mouseButton, int x, int y) {
         if (mouseButton == 0) {
-            buttons.stream().forEach(button -> button.mouseReleased(x, y, thisGame));
+            for (int i = 0; i < buttons.length; i++) {
+                if (buttons[i].clicked(x, y)) {
+                    switch (i) {
+                        case 0: thisGame.enterState(TicTacToe.GAME); break;
+                        case 1: thisGame.enterState(TicTacToe.MAINMENU); break;
+                        case 2: TicTacToe.toggleHuman(TicTacToe.CROSS); break;
+                        case 3: TicTacToe.toggleHuman(TicTacToe.CIRCLE); break;
+                    }
+
+                    buttons[i].postTrigger();
+                }
+            }
         }
     }
 
@@ -45,7 +68,8 @@ public class LevelSelect extends BasicGameState {
 
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) {
-        buttons.stream().forEach(button -> button.render(g));
+        Arrays.stream(buttons).forEach(button -> button.render(g));
+        g.drawString("Computer players:", 240, 25);
     }
 
 }
