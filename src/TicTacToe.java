@@ -12,6 +12,7 @@ public class TicTacToe extends StateBasedGame {
     public static final int MAINMENU = 0;
     public static final int LEVELSELECT = 1;
     public static final int GAME = 2;
+    public static final int CREDITS = 3;
 
     public static final int CROSS = 0;
     public static final int CIRCLE = 1;
@@ -22,9 +23,9 @@ public class TicTacToe extends StateBasedGame {
     public static final int IMPOSSIBLE = 3;
 
     private static int difficulty = MEDIUM;
-    //public static void setDifficulty(int difficulty) {
-    //    TicTacToe.difficulty = difficulty;
-    //}
+    public static void setDifficulty(int difficulty) {
+        TicTacToe.difficulty = difficulty;
+    }
     public static int getDifficulty() {
         return difficulty;
     }
@@ -46,6 +47,7 @@ public class TicTacToe extends StateBasedGame {
         addState(new MainMenu(MAINMENU));
         addState(new LevelSelect(LEVELSELECT));
         addState(new Game(GAME));
+        addState(new Credits(CREDITS));
     }
 
     public static void main(String[] args) {

@@ -16,10 +16,12 @@ public class MainMenu extends BasicGameState {
 
         buttons = new ButtonLike[]{
             new MenuButton("Play game", 256, 200),
+            new MenuButton("Credits", 256, 300),
             new MenuButton("Exit", 256, 340)
         };
     }
 
+    @Override
     public int getID() {
         return stateId;
     }
@@ -36,7 +38,8 @@ public class MainMenu extends BasicGameState {
                 if (buttons[i].clicked(x, y)) {
                     switch (i) {
                         case 0: thisGame.enterState(TicTacToe.LEVELSELECT); break;
-                        case 1: thisGame.getContainer().exit(); break;
+                        case 1: thisGame.enterState(TicTacToe.CREDITS); break;
+                        case 2: thisGame.getContainer().exit(); break;
                     }
                 }
             }
