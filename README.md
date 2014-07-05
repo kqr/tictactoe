@@ -13,6 +13,12 @@ actually plays the game (and rather well at that, given a higher difficulty
 setting.)
 
 
+Dependencies
+------------
+
+Depends on Slick2D.
+
+
 Settings
 --------
 
