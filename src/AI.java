@@ -1,8 +1,5 @@
 
-import java.util.Random;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.List;
+import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
@@ -14,7 +11,7 @@ public class AI {
     public AI(int difficulty) {
         gen = new Random();
         switch (difficulty) {
-            case TicTacToe.EASY: maxConsider = 6; break;
+            case TicTacToe.EASY: maxConsider = 4; break;
             case TicTacToe.MEDIUM: maxConsider = 3; break;
             case TicTacToe.HARD: maxConsider = 2; break;
             case TicTacToe.IMPOSSIBLE: maxConsider = 1; break;
@@ -22,25 +19,41 @@ public class AI {
     }
 
     public int play(Board board) {
-        class ValueComparator implements Comparator<Integer> {
-            Board board;
-            public ValueComparator(Board b) { board = b; }
+        double[] values = IntStream.range(0, 9).mapToDouble(i -> value(board, i)).toArray();
 
+        class ValueComparator implements Comparator<Integer> {
             public int compare(Integer v1, Integer v2) {
-                return -Double.compare(value(board, v1), value(board, v2));
+                return -Double.compare(values[v1], values[v2]);
             }
         }
 
-        PriorityQueue<Integer> bestMoves = new PriorityQueue<>(9, new ValueComparator(board));
-        legalMoves(board).boxed().forEach(bestMoves::add);
+        PriorityQueue<Integer> bestMoves =
+                legalMoves(board).boxed().collect(Collectors.toCollection(() ->
+                                new PriorityQueue<>(9, new ValueComparator())));
 
-        List<Integer> candidates = bestMoves.stream().limit(maxConsider).collect(Collectors.toList());
+        int prevMove = bestMoves.peek();
+
+        // i keeps track of how many unique values we've encountered
+        // take keeps track of how many actual values that is
+        int i = 0, take = 0;
+        for (int move : bestMoves) {
+            if (values[move] < values[prevMove]) {
+                i++;
+                if (i >= maxConsider) {
+                    break;
+                }
+            }
+
+            take++;
+        }
+
+        List<Integer> candidates = bestMoves.stream().limit(take).collect(Collectors.toList());
         return candidates.get(gen.nextInt(candidates.size()));
     }
 
 
     public double value(Board position, int move) {
-        return values(position.copy(), position.nextPlayer(), move, 1).average().orElse(0.0);
+        return scores(position.copy(), position.nextPlayer(), move, 1).average().orElse(0.0);
     }
 
     public IntStream legalMoves(Board position) {
@@ -48,7 +61,7 @@ public class AI {
     }
 
 
-    private DoubleStream values(Board position, int player, int move, int depth) {
+    private DoubleStream scores(Board position, int player, int move, int depth) {
         try {
             position.take(move);
         } catch (AlreadyTakenException e) {
@@ -67,7 +80,7 @@ public class AI {
             }
         } else {
             return legalMoves(position).boxed().flatMapToDouble(i ->
-                    values(position.copy(), player, i, depth+1)
+                    scores(position.copy(), player, i, depth + 1)
             );
         }
     }
