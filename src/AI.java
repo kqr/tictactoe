@@ -37,7 +37,8 @@ public class AI {
         // take keeps track of how many actual values that is
         int i = 0, take = 0;
         for (int move : bestMoves) {
-            if (values[move] < values[prevMove]) {
+            // Floating point comparisons suck. Within 1/1000 counts as "same value"
+            if (values[move] < values[prevMove] - 0.001) {
                 i++;
                 if (i >= maxConsider) {
                     break;
