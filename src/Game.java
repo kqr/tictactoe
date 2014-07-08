@@ -13,6 +13,7 @@ public class Game extends BasicGameState {
     private double moveValue;
 
     private MenuButton backButton;
+    private ConfirmationDialogue confirmBack;
     private Rectangle[] uiSquares = new Rectangle[9];
     private Image[] sprites = new Image[2];
 
@@ -50,9 +51,11 @@ public class Game extends BasicGameState {
 
     @Override
     public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-        for (int i = 0; i < 9; i++) {
-            if (uiSquares[i].contains(newx, newy)) {
-                moveValue = computers[0].value(board.copy(), i);
+        if (confirmBack == null) {
+            for (int i = 0; i < 9; i++) {
+                if (uiSquares[i].contains(newx, newy)) {
+                    moveValue = computers[0].value(board.copy(), i);
+                }
             }
         }
     }
@@ -60,18 +63,28 @@ public class Game extends BasicGameState {
     @Override
     public void mouseReleased(int mouseButton, int x, int y) {
         if (mouseButton == 0) {
-            if (backButton.clicked(x, y)) {
-                thisGame.enterState(TicTacToe.LEVELSELECT);
-            }
+            if (confirmBack == null) {
+                if (backButton.clicked(x, y)) {
+                    confirmBack = new ConfirmationDialogue("Exit the current game?");
+                }
 
-            if (board.humanTurn()) {
-                for (int i = 0; i < 9; i++) {
-                    if (uiSquares[i].contains(x, y)) {
-                        try {
-                            board.take(i);
-                        } catch (AlreadyTakenException e) {
-                            System.out.println("Already taken!!");
+                if (board.humanTurn()) {
+                    for (int i = 0; i < 9; i++) {
+                        if (uiSquares[i].contains(x, y)) {
+                            try {
+                                board.take(i);
+                            } catch (AlreadyTakenException e) {
+                                //Really, don't do anything if the user misclicks
+                            }
                         }
+                    }
+                }
+            } else {
+                if (confirmBack.clicked(x, y)) {
+                    if (confirmBack.isConfirmed()) {
+                        thisGame.enterState(TicTacToe.LEVELSELECT);
+                    } else {
+                        confirmBack = null;
                     }
                 }
             }
@@ -127,6 +140,10 @@ public class Game extends BasicGameState {
         }
 
         backButton.render(g);
+
+        if (confirmBack != null) {
+            confirmBack.render(g);
+        }
     }
 
 }
