@@ -44,6 +44,7 @@ public class Game extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game) {
         thisGame = game;
         board = new Board();
+        confirmBack = null;
 
         computers[TicTacToe.CROSS] = new AI(TicTacToe.getDifficulty());
         computers[TicTacToe.CIRCLE] = new AI(TicTacToe.getDifficulty());
